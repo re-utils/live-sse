@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      * {
+        font-family: monospace;
+      }
+
+      body {
+        width: 100vw;
+
+        padding: 0;
+        margin: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2 style="margin-top: 100px">Streaming UUIDs</h2>
+    <ol id="list"></ol>
+
+    <script>
+      const events = new EventSource("/events");
+
+      events.addEventListener("update", (event) => {
+        const item = document.createElement("li");
+        item.textContent = event.data;
+        list.appendChild(item);
+      });
+    </script>
+  </body>
+</html>
