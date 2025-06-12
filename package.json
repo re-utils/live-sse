@@ -1,8 +1,11 @@
 {
   "name": "live-sse",
   "version": "0.0.2",
-  "description": "Do live update with SSE",
-  "keywords": [],
+  "description": "Do live updates with SSE",
+  "keywords": [
+    "sse",
+    "sync"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "./index.js",

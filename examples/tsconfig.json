@@ -11,6 +11,9 @@
     "verbatimModuleSyntax": true,
     // Best practices
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "live-sse": ["../src/index.ts"]
+    }
   }
 }
