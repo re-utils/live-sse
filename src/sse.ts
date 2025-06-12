@@ -1,5 +1,5 @@
 // A list of readable stream controller
-type Channel = [number, ReadableStreamDefaultController<any>][];
+export type Channel = [number, ReadableStreamDefaultController<any>][];
 
 /**
  * Create an event channel
