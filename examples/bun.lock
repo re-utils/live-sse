@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "dependencies": {
+        "srvx": "^0.8.0",
+      },
+    },
+  },
+  "packages": {
+    "cookie-es": ["cookie-es@2.0.0", "", {}, "sha512-RAj4E421UYRgqokKUmotqAwuplYw15qtdXfY+hGzgCJ/MBjCVZcSoHK/kH9kocfjRjcDME7IiDWR/1WX1TM2Pg=="],
+
+    "srvx": ["srvx@0.8.0", "", { "dependencies": { "cookie-es": "^2.0.0" } }, "sha512-pZNni9zfG1Leld6CgHMy5WXCWVgqFpoFtNX4jk9jhHSxAWCNTDonjyFP/RHAjvRbJw1FR6cQFj87Vn6nA/EhYw=="],
+  }
+}
