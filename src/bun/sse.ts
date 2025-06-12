@@ -31,7 +31,6 @@ export const stream =
         type: 'direct',
 
         pull: (c) => {
-          (c as any as ReadableStreamDirectController).start();
           // @ts-ignore
           const tmp: Channel[number] = [chan.length, c];
           chan.push(tmp);
