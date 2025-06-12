@@ -6,6 +6,10 @@
     "sse",
     "sync"
   ],
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/re-utils/live-sse"
+  },
   "license": "MIT",
   "type": "module",
   "main": "./index.js",
