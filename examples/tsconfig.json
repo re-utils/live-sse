@@ -13,7 +13,8 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "live-sse": ["../src/index.ts"]
+      "live-sse": ["../src/index.ts"],
+      "live-sse/bun": ["../src/bun/index.ts"]
     }
   }
 }

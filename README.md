@@ -32,3 +32,8 @@ events.addEventListener('update', (event) => {
   console.log(event.data);
 });
 ```
+
+`live-sse` also provides an API optimized for `bun`:
+```ts
+import { sse } from 'live-sse/bun';
+```
