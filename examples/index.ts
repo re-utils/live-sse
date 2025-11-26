@@ -3,11 +3,14 @@ import { sse } from 'live-sse';
 
 import { readFileSync } from 'fs';
 
-const home = new Response(readFileSync('./index.html'));
+const home = new Response(readFileSync('./index.html'), {
+  headers: {
+    'content-type': 'text/html'
+  }
+});
 const notFound = new Response(null, { status: 404 });
 
 const chan = sse.channel();
-const createStream = sse.stream(chan);
 
 serve({
   fetch: (req) => {
@@ -19,7 +22,15 @@ serve({
     return path === ''
       ? home.clone()
       : path === 'events'
-        ? createStream(req)
+        ? new Response(
+          sse.toWebStream(chan),
+          {
+            headers: {
+              'content-type': 'text/event-stream',
+              'cache-control': 'no-cache'
+            }
+          }
+        )
         : notFound;
   }
 })

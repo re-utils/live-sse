@@ -6,7 +6,14 @@ const chan = sse.channel();
 Bun.serve({
   routes: {
     '/': home,
-    '/events': sse.stream(chan),
+    '/events': () => new Response(
+      sse.toWebStream(chan),
+      {
+        headers: {
+          'content-type': 'text/event-stream',
+          'cache-control': 'no-cache'
+        }
+      }),
   },
 });
 
