@@ -6,9 +6,9 @@ summary(() => {
     bench(label, function* () {
       yield {
         [0]: () => [Math.random(), Math.random(), Math.random(), Math.random()],
-        [1]: () => Math.random() > 0.5 ? 1 : 2,
-        bench: fn
-      }
+        [1]: () => (Math.random() > 0.5 ? 1 : 2),
+        bench: fn,
+      };
     });
   };
 

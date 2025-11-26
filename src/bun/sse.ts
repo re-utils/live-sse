@@ -1,56 +1,71 @@
 export { startEvent, endData } from '../sse.js';
 
-// A list of readable stream controller
-export type Channel = [number, ReadableStreamDirectController][];
+/**
+ * Describe an item in a stream channel
+ */
+export interface ChannelItem {
+  type: 'direct',
+  c?: ReadableStreamDirectController;
+
+  // Must be initialized
+  p: Channel;
+  i: number;
+
+  pull: (c: ReadableStreamDirectController) => void;
+  cancel: () => void;
+};
+
+/**
+ * Describe a stream channel
+ */
+export type Channel = ChannelItem[];
 
 /**
  * Create an event channel
  */
 export const channel = (): Channel => [];
 
-const options = {
-  headers: [
-    ['content-type', 'text/event-stream'],
-    ['cache-control', 'no-cache'],
-  ],
-} satisfies ResponseInit;
+const blockingPromise = new Promise<void>(() => {});
+function pull(
+  /**
+   * p and i should be initialized first
+   */
+  this: ChannelItem,
+  c: ReadableStreamDirectController,
+) {
+  this.c = c;
+  this.p.push(this);
+  return blockingPromise;
+}
 
-const blockingPromise = new Promise<void>(() => { });
+function cancel(
+  this: ChannelItem
+) {
+  const chan = this.p;
+  const last = chan.pop();
+
+  // Replace current item in the position
+  if (chan.length > 0) chan[last!.i = this.i] = last!;
+}
 
 /**
  * Create an event stream
  * @param signal
  * @param emitter - The event emitter
  */
-export const stream =
-  (chan: Channel): ((req: Request) => Response) => {
-    function pull(this: { _: Channel[number] }, c: ReadableStreamDirectController) {
-      chan.push(this._ = [chan.length, c]);
-      return blockingPromise;
-    }
-
-    function cancel(this: { _: Channel[number] }) {
-      const last = chan.pop()!;
-
-      // Replace current item in the position
-      if (chan.length > 0) chan[(last[0] = this._[0])] = last;
-    }
-
-    return () => new Response(
-      // @ts-ignore
-      new ReadableStream({
-        type: 'direct',
-        _: null,
-        pull,
-        cancel
-      }),
-      options
-    )
-  }
+export const toWebStream = (chan: Channel): ReadableStream =>
+  // @ts-ignore
+  new ReadableStream({
+    type: 'direct',
+    p: chan,
+    i: chan.length,
+    pull,
+    cancel
+  } satisfies ChannelItem);
 
 /**
  * Send a chunk to the channel
  */
 export const send = (chan: Channel, chunk: any): void => {
-  for (let i = 0; i < chan.length; i++) chan[i][1].write(chunk);
+  for (let i = 0; i < chan.length; i++) chan[i].c!.write(chunk);
 };
