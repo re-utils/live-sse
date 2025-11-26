@@ -26,24 +26,29 @@ export const startEvent = (name: string): string =>
  * @param emitter - The event emitter
  */
 export const stream =
-  (chan: Channel): ((req: Request) => Response) =>
-  (req) =>
-    new Response(
-      new ReadableStream({
-        start: (c) => {
-          const tmp: Channel[number] = [chan.length, c];
-          chan.push(tmp);
+  (chan: Channel): (() => Response) => {
+    function start(this: { _: Channel[number] }, c: ReadableStreamDefaultController) {
+      chan.push(this._ = [chan.length, c]);
+    }
 
-          req.signal.addEventListener('abort', () => {
-            const last = chan.pop()!;
+    function cancel(this: { _: Channel[number] }) {
+      const last = chan.pop()!;
 
-            // Replace current item in the position
-            if (chan.length > 0) chan[(last[0] = tmp[0])] = last;
-          });
-        },
-      }),
-      options,
-    );
+      // Replace current item in the position
+      if (chan.length > 0) chan[(last[0] = this._[0])] = last;
+    }
+
+    return () =>
+      new Response(
+        new ReadableStream({
+          // @ts-ignore
+          _: null,
+          start,
+          cancel
+        }),
+        options
+      )
+  }
 
 /**
  * Send a chunk to the channel

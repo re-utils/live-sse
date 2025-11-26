@@ -1,6 +1,6 @@
 {
   "name": "live-sse",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Do live updates with SSE",
   "keywords": [
     "sse",
@@ -19,6 +19,12 @@
     "fmt": "biome format .",
     "build:test": "bun task build && bun test",
     "build:publish": "bun task build && bun task report-size && bun task publish"
+  },
+  "exports": {
+    ".": {
+      "default": "./index.js",
+      "bun": "./bun/index.js"
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

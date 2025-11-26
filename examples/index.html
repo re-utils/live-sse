@@ -24,7 +24,7 @@
     <ol id="list"></ol>
 
     <script>
-      const events = new EventSource("/events");
+      var events = new EventSource("/events");
 
       events.addEventListener("update", (event) => {
         const item = document.createElement("li");

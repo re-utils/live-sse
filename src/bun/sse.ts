@@ -23,31 +23,30 @@ const blockingPromise = new Promise<void>(() => { });
  * @param emitter - The event emitter
  */
 export const stream =
-  (chan: Channel): ((req: Request) => Response) =>
-  (req) =>
-    new Response(
+  (chan: Channel): ((req: Request) => Response) => {
+    function pull(this: { _: Channel[number] }, c: ReadableStreamDirectController) {
+      chan.push(this._ = [chan.length, c]);
+      return blockingPromise;
+    }
+
+    function cancel(this: { _: Channel[number] }) {
+      const last = chan.pop()!;
+
+      // Replace current item in the position
+      if (chan.length > 0) chan[(last[0] = this._[0])] = last;
+    }
+
+    return () => new Response(
+      // @ts-ignore
       new ReadableStream({
-        // @ts-ignore
         type: 'direct',
-
-        pull: (c) => {
-          // @ts-ignore
-          const tmp: Channel[number] = [chan.length, c];
-          chan.push(tmp);
-
-          req.signal.addEventListener('abort', () => {
-            const last = chan.pop()!;
-
-            // Replace current item in the position
-            if (chan.length > 0) chan[(last[0] = tmp[0])] = last;
-          });
-
-          // Keep the stream alive
-          return blockingPromise;
-        },
+        _: null,
+        pull,
+        cancel
       }),
-      options,
-    );
+      options
+    )
+  }
 
 /**
  * Send a chunk to the channel
