@@ -1,5 +1,5 @@
 export interface ChannelItem {
-  c?: ReadableStreamDefaultController;
+  c: ReadableStreamDefaultController;
 
   // Must be initialized
   p: Channel;
@@ -7,7 +7,7 @@ export interface ChannelItem {
 
   start: (c: ReadableStreamDefaultController) => void;
   cancel: () => void;
-};
+}
 
 // A list of readable stream controller
 export type Channel = ChannelItem[];
@@ -35,14 +35,12 @@ function start(
   this.p.push(this);
 }
 
-function cancel(
-  this: ChannelItem
-) {
+function cancel(this: ChannelItem) {
   const chan = this.p;
   const last = chan.pop();
 
   // Replace current item in the position
-  if (chan.length > 0) chan[last!.i = this.i] = last!;
+  if (chan.length > 0) chan[(last!.i = this.i)] = last!;
 }
 
 /**
@@ -55,7 +53,8 @@ export const toWebStream = (chan: Channel): ReadableStream =>
     p: chan,
     i: chan.length,
     start,
-    cancel
+    cancel,
+    c: null as any
   } satisfies ChannelItem);
 
 /**

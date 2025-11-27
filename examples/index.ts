@@ -33,14 +33,11 @@ serve({
         )
         : notFound;
   }
-})
-
-// Start update
-const startUpdate = sse.startEvent('update');
+});
 
 setInterval(() => {
   // Queue chunks
-  sse.send(chan, startUpdate);
+  sse.send(chan, sse.startEvent('update'));
   sse.send(chan, crypto.randomUUID());
   sse.send(chan, sse.endData);
 }, 1000);

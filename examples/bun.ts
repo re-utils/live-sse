@@ -1,4 +1,4 @@
-import { sse } from 'live-sse/bun';
+import { sse } from 'live-sse';
 import home from './index.html';
 
 const chan = sse.channel();
@@ -13,16 +13,14 @@ Bun.serve({
           'content-type': 'text/event-stream',
           'cache-control': 'no-cache'
         }
-      }),
+      }
+    ),
   },
 });
 
-// Start update
-const startUpdate = sse.startEvent('update');
-
 setInterval(() => {
   // Queue chunks
-  sse.send(chan, startUpdate);
+  sse.send(chan, sse.startEvent('update'));
   sse.send(chan, crypto.randomUUID());
   sse.send(chan, sse.endData);
 }, 1000);
